@@ -23,12 +23,13 @@ export function KPIGrid({ citas, cuentas }: KPIGridProps) {
       }
     });
     
+    const agendadas = citasHoy.filter(c => c.estatus === 'agendado').length;
     const confirmadas = citasHoy.filter(c => c.estatus === 'confirmada').length;
     const pendientes = citasHoy.filter(c => c.estatus === 'pendiente').length;
     
-    // Ingresos hoy
+    // Ingresos hoy - suma todas las citas agendadas y confirmadas
     const ingresosHoy = citasHoy
-      .filter(c => c.estatus === 'confirmada')
+      .filter(c => c.estatus === 'agendado' || c.estatus === 'confirmada')
       .reduce((sum, c) => sum + c.precio, 0);
     
     // Próxima cita
@@ -88,6 +89,7 @@ export function KPIGrid({ citas, cuentas }: KPIGridProps) {
     return {
       citasHoy: {
         total: citasHoy.length,
+        agendadas,
         confirmadas,
         pendientes,
       },
@@ -104,7 +106,7 @@ export function KPIGrid({ citas, cuentas }: KPIGridProps) {
       <KPICard
         title="Citas de Hoy"
         value={kpis.citasHoy.total}
-        subtitle={`${kpis.citasHoy.confirmadas} confirmadas · ${kpis.citasHoy.pendientes} pendientes`}
+        subtitle={`${kpis.citasHoy.agendadas} agendadas${kpis.citasHoy.confirmadas > 0 ? ` · ${kpis.citasHoy.confirmadas} confirmadas` : ''}`}
         icon={Calendar}
         trend={kpis.citasHoy.total > 0 ? { value: 12, isPositive: true } : undefined}
       />

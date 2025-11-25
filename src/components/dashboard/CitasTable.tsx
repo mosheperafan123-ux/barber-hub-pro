@@ -46,6 +46,7 @@ export function CitasTable({ citas }: CitasTableProps) {
   
   const getEstatusBadge = (estatus: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+      agendado: 'default',
       confirmada: 'default',
       pendiente: 'secondary',
       cancelada: 'destructive',
