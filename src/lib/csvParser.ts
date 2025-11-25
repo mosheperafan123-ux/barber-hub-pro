@@ -101,18 +101,21 @@ export function parseCitasCSV(csvText: string): Cita[] {
     console.error('CSV Parse errors:', result.errors);
   }
   
-  return result.data.map((row: any, idx: number) => ({
+  const citas = result.data.map((row: any, idx: number) => ({
     id: row.id || `cita-${idx}`,
     estatus: normalizarEstatus(row.estatus),
     nombre: row.nombre || '',
     servicio: row.servicio || '',
-    precio: normalizarPrecio(row.precio),
+    precio: normalizarPrecio(row['precio del servicio'] || row.precio || ''),
     dia: normalizarFecha(row.dia),
     hora: normalizarHora(row.hora),
-    numeroCelular: row['número celular'] || row['numero celular'] || row.numero || '',
+    numeroCelular: row['numero de celular'] || row['número celular'] || row['numero celular'] || row.numero || '',
     executionId: row['execution id'] || row.executionid || '',
     categoriaServicio: categorizarServicio(row.servicio),
   }));
+  
+  console.log(`Parsed ${citas.length} citas from CSV`);
+  return citas;
 }
 
 // Parse CSV de cuentas mensuales usando PapaParse
@@ -127,9 +130,12 @@ export function parseCuentasCSV(csvText: string): CuentaMensual[] {
     console.error('CSV Parse errors:', result.errors);
   }
   
-  return result.data.map((row: any) => ({
+  const cuentas = result.data.map((row: any) => ({
     fecha: normalizarFecha(row.fecha),
-    agendados: parseInt(row.agendados) || 0,
+    agendados: parseInt(row.agendas || row.agendados) || 0,
     total: normalizarPrecio(row.total),
   }));
+  
+  console.log(`Parsed ${cuentas.length} cuentas from CSV`);
+  return cuentas;
 }
